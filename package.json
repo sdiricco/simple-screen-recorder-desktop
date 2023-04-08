@@ -21,12 +21,14 @@
     "lodash": "^4.17.21",
     "pinia": "^2.0.34",
     "ramda": "^0.28.0",
+    "recordrtc": "^5.6.2",
     "roboto-fontface": "*",
     "vue-router": "^4.1.6",
     "vuetify": "^3.0.4"
   },
   "devDependencies": {
     "@types/fluent-ffmpeg": "^2.1.21",
+    "@types/recordrtc": "^5.6.11",
     "@vitejs/plugin-vue": "^4.0.0",
     "electron": "^24.0.0",
     "electron-builder": "^23.6.0",

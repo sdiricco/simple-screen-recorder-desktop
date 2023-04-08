@@ -27,6 +27,7 @@ var Channel = /* @__PURE__ */ ((Channel2) => {
   Channel2["ShowOpenDialog"] = "electron/show-open-dialog";
   Channel2["Menu"] = "electron/menu";
   Channel2["ConvertToMp4"] = "electron/convert-to-mp4";
+  Channel2["GetAvailableSources"] = "electron/get-available-sources";
   Channel2["OnConversionProgress"] = "electron/on-conversion-progress";
   return Channel2;
 })(Channel || {});
@@ -81,7 +82,28 @@ function handleDialogs(win2) {
     return result;
   });
 }
-async function handleFfmpeg(win2) {
+async function handleScreenCapture(win2) {
+  electron.ipcMain.handle(Channel.GetAvailableSources, async (_evt) => {
+    const result = {
+      data: null,
+      error: null
+    };
+    const error = {
+      code: 0,
+      message: "Error during get available sources",
+      details: "",
+      type: "electron",
+      channel: Channel.GetAvailableSources
+    };
+    try {
+      result.data = await electron.desktopCapturer.getSources({ types: ["window", "screen"] });
+    } catch (e) {
+      result.error = { ...error, ...{ details: e.message } };
+    }
+    return result;
+  });
+}
+function handleFfmpeg(win2) {
   electron.ipcMain.handle(Channel.ConvertToMp4, async (_evt, data) => {
     const result = {
       data: null,
@@ -112,6 +134,7 @@ async function handleFfmpeg(win2) {
 }
 function onWindowCreated(window) {
   handleDialogs(window);
+  handleScreenCapture();
   handleFfmpeg(window);
 }
 process.env.DIST_ELECTRON = path.join(__dirname, "..");

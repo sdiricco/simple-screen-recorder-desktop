@@ -18,6 +18,14 @@ export async function convertToMp4(): Promise<void> {
   return response.data;
 }
 
+export async function getAvailableSources(): Promise<void> {
+  const response = await ipcRenderer.invoke(Channel.GetAvailableSources);  
+  if (response.error) {
+    throw new ElectronError(response.error);
+  }
+  return response.data;
+}
+
 export async function invokeChildWin()  {
   return await ipcRenderer.invoke('open-win');
 }
@@ -33,4 +41,5 @@ export async function onConversionProgress(callback: Function){
     callback(data);
   })
 }
+
 

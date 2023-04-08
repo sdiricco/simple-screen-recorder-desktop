@@ -1,4 +1,4 @@
-import { ipcMain, BrowserWindow, dialog } from "electron";
+import { ipcMain, BrowserWindow, dialog, desktopCapturer } from "electron";
 import { IError, Channel } from "../types";
 import {conversionToMp4, preProcessVideo, run} from "../ffmpeg"
 
@@ -32,7 +32,30 @@ export function handleDialogs(win: BrowserWindow) {
   });
 }
 
-export async function handleFfmpeg(win: BrowserWindow){
+export async function handleScreenCapture(win: BrowserWindow){
+  ipcMain.handle(Channel.GetAvailableSources, async (_evt) => {
+    const result = {
+      data: null,
+      error: null
+    }
+    const error: IError = {
+      code: 0,
+      message: "Error during get available sources",
+      details: '',
+      type: "electron",
+      channel: Channel.GetAvailableSources,
+    };
+    try {
+      result.data = await desktopCapturer.getSources({ types: ['window', 'screen'] })
+    } catch (e) {
+      result.error = {...error, ...{details: e.message} }
+    }
+    return result;
+  });
+  
+}
+
+export function handleFfmpeg(win: BrowserWindow){
   /* CONVERT WEBM TO MP4 */
   ipcMain.handle(Channel.ConvertToMp4, async (_evt, data) => {
     const result = {

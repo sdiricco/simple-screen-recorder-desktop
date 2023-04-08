@@ -30,6 +30,8 @@ export enum Channel {
   Menu = "electron/menu",
 
   ConvertToMp4 = "electron/convert-to-mp4",
+  GetAvailableSources = "electron/get-available-sources",
+
   OnConversionProgress = "electron/on-conversion-progress",
 
 }
